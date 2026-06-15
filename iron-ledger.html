@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Iron Ledger</title>
+<meta name="theme-color" content="#F3F3F0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Iron Ledger">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAABuUlEQVR42u3dPQrCMBiAYZVS6F4HcfFQopuTTs4eQBy8h+BQz+DkD4KLtnggRx0qugSiPs8YSlPKy5cxzU6314A6Lb8AcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+IAcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+JAHCAOxIE4EAfiQByIA3EgDv5PEsNH3Kpzmqbh3j+eTHf7Yzz7mhw4VhAH4oCHZsyXDpeXU5Zlnz8/GI6uZfW9+5ociANxIA7EAeJAHIgDcSAOxIE4EAfiQBwgDsSBOBAH4kAciANxIA7EgThAHIgDcSAOxIE4EAfiQByIA8SBOBAH4kAciIP4JX5BPNp5fjxsn1fW62K+WJocOFYQB+JAHIgDxIE4EAeB/NSN1JtiVbse+kbqV/uaHDhWEAeIg/eivpEakwNxIA7EgTgQB4gDcSAOxIE4EAfiQByIA3GAOBAH4kAciANxIA7EgTgQB4gDcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+IAcSAOxEEYyayvD0wOxIE4EAfiQByIA3EgDsQB4kAciINg7jRELaEW/+I6AAAAAElFTkSuQmCC">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAABuUlEQVR42u3dPQrCMBiAYZVS6F4HcfFQopuTTs4eQBy8h+BQz+DkD4KLtnggRx0qugSiPs8YSlPKy5cxzU6314A6Lb8AcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+IAcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+JAHCAOxIE4EAfiQByIA3EgDv5PEsNH3Kpzmqbh3j+eTHf7Yzz7mhw4VhAH4oCHZsyXDpeXU5Zlnz8/GI6uZfW9+5ociANxIA7EAeJAHIgDcSAOxIE4EAfiQBwgDsSBOBAH4kAciANxIA7EgThAHIgDcSAOxIE4EAfiQByIA8SBOBAH4kAciIP4JX5BPNp5fjxsn1fW62K+WJocOFYQB+JAHIgDxIE4EAeB/NSN1JtiVbse+kbqV/uaHDhWEAeIg/eivpEakwNxIA7EgTgQB4gDcSAOxIE4EAfiQByIA3GAOBAH4kAciANxIA7EgTgQB4gDcSAOxIE4EAfiQByIA3EgDhAH4kAciANxIA7EgTgQB+IAcSAOxEEYyayvD0wOxIE4EAfiQByIA3EgDsQB4kAciINg7jRELaEW/+I6AAAAAElFTkSuQmCC">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg:#F3F3F0; --card:#FFFFFF; --inset:#F7F7F5; --line:#E5E5E0; --line2:#D8D8D2;
+  --ink:#191B20; --muted:#70747E; --faint:#A4A8B0;
+  --bronze:#8E6F22; --bronze-deep:#6E5417; --bronze-tint:#F5EEDC;
+  --green:#1E7A4C; --green-tint:#E5F3EB; --red:#BC4A3C;
+  --shadow:0 1px 2px rgba(20,22,30,.05),0 10px 30px rgba(20,22,30,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg)}
+.il-app{min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.45;
+  padding-bottom:calc(110px + env(safe-area-inset-bottom));
+  padding-top:env(safe-area-inset-top)}
+.il-wrap{max-width:760px;margin:0 auto;padding:0 14px}
+.il-mast{padding:26px 2px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.il-logo{font-family:'Fraunces';font-weight:600;font-size:27px;line-height:1;letter-spacing:.01em}
+.il-logo em{font-style:italic;color:var(--bronze)}
+.il-tag{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-top:5px}
+.il-unit{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;background:var(--card)}
+.il-unit button{background:none;border:none;color:var(--muted);font-family:'JetBrains Mono';
+  font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer}
+.il-unit button.on{background:var(--ink);color:#FFF}
+.il-week{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:16px 16px 14px;margin-bottom:16px;box-shadow:var(--shadow)}
+.il-week-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.il-week-label{font-family:'Fraunces';font-weight:600;font-size:20px}
+.il-week-sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.il-nav{display:flex;gap:6px}
+.il-nav button{height:36px;min-width:36px;border-radius:10px;border:1px solid var(--line2);
+  background:var(--card);color:var(--ink);font-size:16px;cursor:pointer;line-height:1}
+.il-nav button:active{background:var(--inset)}
+.il-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.il-stat{background:var(--inset);border:1px solid var(--line);border-radius:12px;padding:10px 11px}
+.il-stat b{display:block;font-family:'JetBrains Mono';font-size:18px;font-weight:700;color:var(--ink)}
+.il-stat small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.09em}
+.il-day{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  margin-bottom:11px;overflow:hidden;box-shadow:var(--shadow)}
+.il-day.today{border-color:var(--bronze)}
+.il-day-head{display:flex;align-items:center;gap:13px;padding:14px 15px;cursor:pointer;user-select:none}
+.il-date{text-align:center;min-width:46px}
+.il-date .dn{font-size:10px;font-weight:600;letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
+.il-date .dd{font-family:'Fraunces';font-size:26px;font-weight:600;line-height:1.05}
+.il-day.today .il-date .dd{color:var(--bronze)}
+.il-day-meta{flex:1;min-width:0}
+.il-day-title{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.il-day-sub{color:var(--muted);font-size:12px;font-family:'JetBrains Mono';margin-top:1px}
+.il-chev{color:var(--faint);transition:transform .18s;font-size:13px}
+.il-chev.open{transform:rotate(180deg)}
+.il-day-body{padding:0 15px 15px;border-top:1px solid var(--line)}
+.il-group{margin-top:13px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.il-group-head{display:flex;align-items:center;gap:8px;padding:11px 13px;background:var(--inset)}
+.il-group-name{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze-deep);flex:1}
+.il-x{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:4px 6px;border-radius:6px;line-height:1}
+.il-x:hover{color:var(--red)}
+.il-ex{border-top:1px solid var(--line);padding:11px 13px}
+.il-ex-head{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.il-ex-name{flex:1;font-weight:600;font-size:14.5px;min-width:0}
+.il-pr{font-family:'JetBrains Mono';font-size:10px;font-weight:700;letter-spacing:.08em;
+  background:var(--bronze-tint);color:var(--bronze-deep);border:1px solid #E3D5AC;
+  border-radius:99px;padding:3px 8px}
+.il-ex-best{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);white-space:nowrap}
+.il-sets-head{display:grid;grid-template-columns:44px 1fr 1fr 38px 28px;gap:7px;
+  font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:6px;padding:0 2px;text-align:center}
+.il-set{display:grid;grid-template-columns:44px 1fr 1fr 38px 28px;gap:7px;align-items:center;margin-bottom:6px}
+.il-type{height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--card);
+  font-family:'JetBrains Mono';font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink)}
+.il-type.warm{background:var(--bronze-tint);border-color:#E3D5AC;color:var(--bronze-deep)}
+.il-set.warm .il-num{color:var(--muted)}
+.il-num{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:9px;
+  color:var(--ink);font-family:'JetBrains Mono';font-size:16px;font-weight:500;
+  padding:7px 6px;text-align:center;-moz-appearance:textfield}
+.il-num::-webkit-outer-spin-button,.il-num::-webkit-inner-spin-button{-webkit-appearance:none}
+.il-num:focus{outline:none;border-color:var(--bronze)}
+.il-done{width:36px;height:36px;border-radius:9px;border:1px solid var(--line2);
+  background:var(--card);color:var(--faint);cursor:pointer;font-size:14px;justify-self:center}
+.il-done.on{background:var(--green-tint);border-color:var(--green);color:var(--green)}
+.il-set .il-x{justify-self:center}
+.il-add{background:none;border:1px dashed var(--line2);border-radius:10px;color:var(--muted);
+  font-size:13px;font-weight:500;padding:8px 12px;cursor:pointer;width:100%;margin-top:4px}
+.il-add:hover{color:var(--bronze-deep);border-color:var(--bronze)}
+.il-add.solid{border-style:solid;margin-top:13px;background:var(--card)}
+.il-legend{display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--faint);flex-wrap:wrap}
+.il-legend i{font-style:normal;font-family:'JetBrains Mono';font-weight:700;color:var(--bronze-deep)}
+.il-picker{margin-top:13px;background:var(--inset);border:1px solid var(--line);border-radius:14px;padding:13px}
+.il-picker-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.il-chips{display:flex;flex-wrap:wrap;gap:7px}
+.il-chip{background:var(--card);border:1px solid var(--line2);border-radius:99px;color:var(--ink);
+  font-size:12.5px;font-weight:600;letter-spacing:.03em;padding:7px 14px;cursor:pointer}
+.il-chip:hover{border-color:var(--bronze);color:var(--bronze-deep)}
+.il-row{display:flex;gap:8px;margin-top:11px}
+.il-text{flex:1;min-width:0;background:var(--card);border:1px solid var(--line2);border-radius:10px;
+  color:var(--ink);font-size:16px;padding:8px 11px}
+.il-text:focus{outline:none;border-color:var(--bronze)}
+.il-btn{background:var(--ink);border:none;border-radius:10px;color:#FFF;font-weight:600;
+  font-size:13.5px;padding:9px 16px;cursor:pointer}
+.il-btn:disabled{opacity:.35;cursor:default}
+.il-ghost{background:var(--card);border:1px solid var(--line2);border-radius:10px;color:var(--muted);
+  font-size:13.5px;padding:9px 13px;cursor:pointer}
+.il-note{width:100%;background:var(--inset);border:1px solid var(--line);border-radius:11px;
+  color:var(--ink);font-size:16px;padding:9px 11px;margin-top:13px;resize:vertical;
+  min-height:38px;font-family:'Inter'}
+.il-note:focus{outline:none;border-color:var(--bronze)}
+.il-note::placeholder{color:var(--faint)}
+.il-empty{color:var(--faint);font-size:13px;text-align:center;padding:14px 0 4px}
+.il-timer{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));right:16px;z-index:20;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.il-timer-presets{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:8px;box-shadow:var(--shadow)}
+.il-timer-presets button{background:var(--inset);border:1px solid var(--line2);border-radius:9px;
+  font-family:'JetBrains Mono';font-size:12px;font-weight:700;color:var(--ink);padding:8px 10px;cursor:pointer}
+.il-timer-pill{display:flex;align-items:center;gap:8px;background:var(--ink);color:#FFF;
+  border:none;border-radius:99px;padding:12px 18px;cursor:pointer;box-shadow:var(--shadow);
+  font-family:'JetBrains Mono';font-size:14px;font-weight:700}
+.il-timer-pill.running{background:var(--bronze-deep)}
+.il-timer-pill small{font-family:'Inter';font-weight:600;font-size:12px;opacity:.75}
+.il-save{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:16px;
+  background:var(--card);border:1px solid var(--line);border-radius:99px;color:var(--muted);
+  font-family:'JetBrains Mono';font-size:11px;padding:7px 14px;opacity:0;transition:opacity .25s;
+  pointer-events:none;box-shadow:var(--shadow)}
+.il-save.show{opacity:1}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* storage adapter: Claude artifact storage if present, otherwise browser localStorage */
+const store = {
+  async get(k) {
+    if (window.storage) { try { return await window.storage.get(k); } catch (e) { return null; } }
+    const v = localStorage.getItem(k);
+    return v ? { value: v } : null;
+  },
+  async set(k, v) {
+    if (window.storage) { try { return await window.storage.set(k, v); } catch (e) { return null; } }
+    localStorage.setItem(k, v);
+    return { key: k };
+  },
+};
+
+const GROUPS = ["Chest", "Back", "Legs", "Shoulders", "Biceps", "Triceps", "Core", "Glutes", "Full Body", "Cardio"];
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const KEY = "iron-ledger-v1";
+const PRESETS = [60, 90, 120, 180];
+
+const uid = () => Math.random().toString(36).slice(2, 9);
+const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const fromIso = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const isWork = (s) => (s.type || "work") === "work";
+
+const blankSet = (prev, type = "work") => ({
+  id: uid(), type, weight: prev?.weight ?? "", reps: prev?.reps ?? "", done: false,
+});
+
+function dayVolume(day) {
+  let vol = 0, sets = 0, warm = 0;
+  (day?.groups || []).forEach(g => g.exercises.forEach(ex => ex.sets.forEach(s => {
+    const w = parseFloat(s.weight) || 0, r = parseInt(s.reps) || 0;
+    if (!isWork(s)) { if (w || r) warm++; return; }
+    if (w && r) { vol += w * r; sets++; } else if (r) sets++;
+  })));
+  return { vol, sets, warm };
+}
+
+function historicalBest(data, name, beforeIso) {
+  const key = name.trim().toLowerCase();
+  let best = 0;
+  Object.entries(data.days).forEach(([d, day]) => {
+    if (d >= beforeIso) return;
+    (day.groups || []).forEach(g => g.exercises.forEach(ex => {
+      if (ex.name.trim().toLowerCase() !== key) return;
+      ex.sets.forEach(s => { if (isWork(s)) best = Math.max(best, parseFloat(s.weight) || 0); });
+    }));
+  });
+  return best;
+}
+
+const fmtNum = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${Math.round(n)}`);
+const fmtClock = (sec) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+
+function IronLedger() {
+  const [data, setData] = useState(null);
+  const [offset, setOffset] = useState(0);
+  const [open, setOpen] = useState(null);
+  const [picker, setPicker] = useState(null);
+  const [customGroup, setCustomGroup] = useState("");
+  const [exDrafts, setExDrafts] = useState({});
+  const [saved, setSaved] = useState(false);
+  const [timerLeft, setTimerLeft] = useState(0);
+  const [showPresets, setShowPresets] = useState(false);
+  const saveTimer = useRef(null);
+  const firstLoad = useRef(true);
+  const tickRef = useRef(null);
+
+  const todayIso = iso(new Date());
+
+  useEffect(() => {
+    (async () => {
+      let loaded = null;
+      try {
+        const res = await store.get(KEY);
+        if (res?.value) loaded = JSON.parse(res.value);
+      } catch (e) {}
+      if (!loaded) loaded = { anchor: todayIso, unit: "lbs", days: {} };
+      setData(loaded);
+      setOpen(todayIso);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!data) return;
+    if (firstLoad.current) { firstLoad.current = false; return; }
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await store.set(KEY, JSON.stringify(data));
+        setSaved(true);
+        setTimeout(() => setSaved(false), 1400);
+      } catch (e) { console.error("Save failed", e); }
+    }, 600);
+    return () => clearTimeout(saveTimer.current);
+  }, [data]);
+
+  useEffect(() => {
+    if (timerLeft <= 0) { clearInterval(tickRef.current); return; }
+    tickRef.current = setInterval(() => {
+      setTimerLeft(t => {
+        if (t <= 1) {
+          clearInterval(tickRef.current);
+          try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {}
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(tickRef.current);
+  }, [timerLeft > 0]);
+
+  const mutateDay = useCallback((dIso, fn) => {
+    setData(prev => {
+      const day = prev.days[dIso] ? JSON.parse(JSON.stringify(prev.days[dIso])) : { groups: [], note: "" };
+      fn(day);
+      return { ...prev, days: { ...prev.days, [dIso]: day } };
+    });
+  }, []);
+
+  if (!data) return (
+    <div className="il-app">
+      <div className="il-wrap" style={{ paddingTop: 60, textAlign: "center", color: "#70747E" }}>
+        Loading your log…
+      </div>
+    </div>
+  );
+
+  const anchor = fromIso(data.anchor);
+  const weekStart = addDays(anchor, offset * 7);
+  const weekDates = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const weekEnd = weekDates[6];
+  const fmtRange = `${MONTHS[weekStart.getMonth()]} ${weekStart.getDate()} – ${MONTHS[weekEnd.getMonth()]} ${weekEnd.getDate()}, ${weekEnd.getFullYear()}`;
+
+  let wkVol = 0, wkSets = 0, wkWorkouts = 0;
+  weekDates.forEach(d => {
+    const day = data.days[iso(d)];
+    if (day?.groups?.length) {
+      wkWorkouts++;
+      const { vol, sets } = dayVolume(day);
+      wkVol += vol; wkSets += sets;
+    }
+  });
+
+  const addGroup = (dIso, name) => {
+    if (!name.trim()) return;
+    mutateDay(dIso, day => day.groups.push({ id: uid(), name: name.trim(), exercises: [] }));
+    setPicker(null); setCustomGroup("");
+  };
+  const removeGroup = (dIso, gid) =>
+    mutateDay(dIso, day => { day.groups = day.groups.filter(g => g.id !== gid); });
+
+  const addExercise = (dIso, gid) => {
+    const name = (exDrafts[gid] || "").trim();
+    if (!name) return;
+    mutateDay(dIso, day => {
+      const g = day.groups.find(g => g.id === gid);
+      g.exercises.push({ id: uid(), name, sets: [blankSet(null, "warm"), blankSet()] });
+    });
+    setExDrafts(p => ({ ...p, [gid]: "" }));
+  };
+  const removeExercise = (dIso, gid, eid) =>
+    mutateDay(dIso, day => {
+      const g = day.groups.find(g => g.id === gid);
+      g.exercises = g.exercises.filter(e => e.id !== eid);
+    });
+
+  const addSet = (dIso, gid, eid) =>
+    mutateDay(dIso, day => {
+      const ex = day.groups.find(g => g.id === gid).exercises.find(e => e.id === eid);
+      ex.sets.push(blankSet(ex.sets[ex.sets.length - 1]));
+    });
+  const removeSet = (dIso, gid, eid, sid) =>
+    mutateDay(dIso, day => {
+      const ex = day.groups.find(g => g.id === gid).exercises.find(e => e.id === eid);
+      ex.sets = ex.sets.filter(s => s.id !== sid);
+    });
+  const setField = (dIso, gid, eid, sid, field, val) =>
+    mutateDay(dIso, day => {
+      const s = day.groups.find(g => g.id === gid).exercises.find(e => e.id === eid)
+        .sets.find(s => s.id === sid);
+      if (field === "done") s.done = !s.done;
+      else if (field === "type") s.type = isWork(s) ? "warm" : "work";
+      else s[field] = val;
+    });
+  const setNote = (dIso, val) => mutateDay(dIso, day => { day.note = val; });
+
+  const copyLastWeek = (dIso) => {
+    const src = data.days[iso(addDays(fromIso(dIso), -7))];
+    if (!src?.groups?.length) return;
+    mutateDay(dIso, day => {
+      day.groups = JSON.parse(JSON.stringify(src.groups)).map(g => ({
+        ...g, id: uid(),
+        exercises: g.exercises.map(ex => ({
+          ...ex, id: uid(),
+          sets: ex.sets.map(s => ({ ...s, id: uid(), done: false })),
+        })),
+      }));
+    });
+  };
+
+  return (
+    <div className="il-app">
+      <div className="il-wrap">
+
+        <header className="il-mast">
+          <div>
+            <div className="il-logo">Iron <em>Ledger</em></div>
+            <div className="il-tag">Training Record</div>
+          </div>
+          <div className="il-unit" role="group" aria-label="Weight unit">
+            {["lbs", "kg"].map(u => (
+              <button key={u} className={data.unit === u ? "on" : ""}
+                onClick={() => setData(p => ({ ...p, unit: u }))}>{u}</button>
+            ))}
+          </div>
+        </header>
+
+        <section className="il-week">
+          <div className="il-week-top">
+            <div>
+              <div className="il-week-label">
+                {offset === 0 ? "This Week" : offset > 0 ? `${offset} Week${offset > 1 ? "s" : ""} Ahead` : `${-offset} Week${offset < -1 ? "s" : ""} Back`}
+              </div>
+              <div className="il-week-sub">{fmtRange}</div>
+            </div>
+            <div className="il-nav">
+              <button aria-label="Previous week" onClick={() => setOffset(o => o - 1)}>‹</button>
+              {offset !== 0 && <button style={{ padding: "0 11px", fontSize: 12, fontWeight: 600 }} onClick={() => setOffset(0)}>Today</button>}
+              <button aria-label="Next week" onClick={() => setOffset(o => o + 1)}>›</button>
+            </div>
+          </div>
+          <div className="il-stats">
+            <div className="il-stat"><b>{wkWorkouts}</b><small>Workouts</small></div>
+            <div className="il-stat"><b>{wkSets}</b><small>Working sets</small></div>
+            <div className="il-stat"><b>{fmtNum(wkVol)}</b><small>Volume {data.unit}</small></div>
+          </div>
+        </section>
+
+        {weekDates.map(d => {
+          const dIso = iso(d);
+          const day = data.days[dIso];
+          const isToday = dIso === todayIso;
+          const isOpen = open === dIso;
+          const groups = day?.groups || [];
+          const { vol, sets, warm } = dayVolume(day);
+          const title = groups.length ? groups.map(g => g.name).join(" · ") : "Rest day — tap to plan";
+          const lastWeekHas = !!data.days[iso(addDays(d, -7))]?.groups?.length;
+
+          return (
+            <article key={dIso} className={`il-day${isToday ? " today" : ""}`}>
+              <div className="il-day-head" onClick={() => setOpen(isOpen ? null : dIso)}>
+                <div className="il-date">
+                  <div className="dn">{DAYS[d.getDay()]}</div>
+                  <div className="dd">{d.getDate()}</div>
+                </div>
+                <div className="il-day-meta">
+                  <div className="il-day-title" style={!groups.length ? { color: "var(--faint)", fontWeight: 500 } : null}>{title}</div>
+                  {groups.length > 0 && (
+                    <div className="il-day-sub">
+                      {sets} working{warm ? ` + ${warm} warm` : ""} · {fmtNum(vol)} {data.unit}
+                    </div>
+                  )}
+                </div>
+                <div className={`il-chev${isOpen ? " open" : ""}`}>▼</div>
+              </div>
+
+              {isOpen && (
+                <div className="il-day-body">
+                  {!groups.length && picker !== dIso && (
+                    <div className="il-empty">Nothing logged for this day yet.</div>
+                  )}
+
+                  {groups.map(g => (
+                    <div key={g.id} className="il-group">
+                      <div className="il-group-head">
+                        <div className="il-group-name">{g.name}</div>
+                        <button className="il-x" aria-label={`Remove ${g.name}`}
+                          onClick={() => removeGroup(dIso, g.id)}>✕</button>
+                      </div>
+
+                      {g.exercises.map(ex => {
+                        const top = ex.sets.reduce((m, s) => isWork(s) ? Math.max(m, parseFloat(s.weight) || 0) : m, 0);
+                        const prevBest = historicalBest(data, ex.name, dIso);
+                        const isPR = top > 0 && prevBest > 0 && top > prevBest;
+                        let workN = 0;
+                        return (
+                          <div key={ex.id} className="il-ex">
+                            <div className="il-ex-head">
+                              <div className="il-ex-name">{ex.name}</div>
+                              {isPR && <span className="il-pr">PR ▲</span>}
+                              {top > 0 && <div className="il-ex-best">top {top} {data.unit}</div>}
+                              <button className="il-x" aria-label={`Remove ${ex.name}`}
+                                onClick={() => removeExercise(dIso, g.id, ex.id)}>✕</button>
+                            </div>
+                            <div className="il-sets-head">
+                              <span>Type</span><span>{data.unit}</span><span>Reps</span><span>✓</span><span></span>
+                            </div>
+                            {ex.sets.map(s => {
+                              const work = isWork(s);
+                              if (work) workN++;
+                              return (
+                                <div key={s.id} className={`il-set${work ? "" : " warm"}`}>
+                                  <button
+                                    className={`il-type${work ? "" : " warm"}`}
+                                    title={work ? "Working set — tap for warm-up" : "Warm-up set — tap for working"}
+                                    onClick={() => setField(dIso, g.id, ex.id, s.id, "type")}>
+                                    {work ? `S${workN}` : "W·U"}
+                                  </button>
+                                  <input className="il-num" type="number" inputMode="decimal"
+                                    placeholder="—" value={s.weight}
+                                    onChange={e => setField(dIso, g.id, ex.id, s.id, "weight", e.target.value)} />
+                                  <input className="il-num" type="number" inputMode="numeric"
+                                    placeholder="—" value={s.reps}
+                                    onChange={e => setField(dIso, g.id, ex.id, s.id, "reps", e.target.value)} />
+                                  <button className={`il-done${s.done ? " on" : ""}`}
+                                    aria-label="Mark set complete"
+                                    onClick={() => setField(dIso, g.id, ex.id, s.id, "done")}>✓</button>
+                                  <button className="il-x" aria-label="Delete set"
+                                    onClick={() => removeSet(dIso, g.id, ex.id, s.id)}>✕</button>
+                                </div>
+                              );
+                            })}
+                            <button className="il-add" onClick={() => addSet(dIso, g.id, ex.id)}>
+                              + Add set
+                            </button>
+                            <div className="il-legend">
+                              <span><i>W·U</i> warm-up — excluded from volume</span>
+                              <span><i>S1…</i> working</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <div className="il-ex" style={{ paddingTop: 10 }}>
+                        <div className="il-row" style={{ marginTop: 0 }}>
+                          <input className="il-text" placeholder="Exercise name (e.g. Bench Press)"
+                            value={exDrafts[g.id] || ""}
+                            onChange={e => setExDrafts(p => ({ ...p, [g.id]: e.target.value }))}
+                            onKeyDown={e => e.key === "Enter" && addExercise(dIso, g.id)} />
+                          <button className="il-btn" disabled={!(exDrafts[g.id] || "").trim()}
+                            onClick={() => addExercise(dIso, g.id)}>Add</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {picker === dIso ? (
+                    <div className="il-picker">
+                      <div className="il-picker-label">Choose a muscle group</div>
+                      <div className="il-chips">
+                        {GROUPS.map(gp => (
+                          <button key={gp} className="il-chip" onClick={() => addGroup(dIso, gp)}>{gp}</button>
+                        ))}
+                      </div>
+                      <div className="il-row">
+                        <input className="il-text" placeholder="Or type your own…"
+                          value={customGroup}
+                          onChange={e => setCustomGroup(e.target.value)}
+                          onKeyDown={e => e.key === "Enter" && addGroup(dIso, customGroup)} />
+                        <button className="il-btn" disabled={!customGroup.trim()}
+                          onClick={() => addGroup(dIso, customGroup)}>Add</button>
+                        <button className="il-ghost" onClick={() => { setPicker(null); setCustomGroup(""); }}>Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <React.Fragment>
+                      <button className="il-add solid" onClick={() => setPicker(dIso)}>
+                        + Add muscle group
+                      </button>
+                      {!groups.length && lastWeekHas && (
+                        <button className="il-add" onClick={() => copyLastWeek(dIso)}>
+                          ⟲ Copy last {DAYS[d.getDay()]}'s workout
+                        </button>
+                      )}
+                    </React.Fragment>
+                  )}
+
+                  <textarea className="il-note" placeholder="Day notes — how it felt, PRs, cues…"
+                    value={day?.note || ""}
+                    onChange={e => setNote(dIso, e.target.value)} rows={1} />
+                </div>
+              )}
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="il-timer">
+        {showPresets && (
+          <div className="il-timer-presets">
+            {PRESETS.map(p => (
+              <button key={p} onClick={() => { setTimerLeft(p); setShowPresets(false); }}>
+                {fmtClock(p)}
+              </button>
+            ))}
+          </div>
+        )}
+        <button
+          className={`il-timer-pill${timerLeft > 0 ? " running" : ""}`}
+          onClick={() => timerLeft > 0 ? setTimerLeft(0) : setShowPresets(s => !s)}>
+          {timerLeft > 0 ? <React.Fragment>⏱ {fmtClock(timerLeft)} <small>tap to stop</small></React.Fragment> : <React.Fragment>⏱ <small>Rest timer</small></React.Fragment>}
+        </button>
+      </div>
+
+      <div className={`il-save${saved ? " show" : ""}`}>Saved ✓</div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<IronLedger />);
+</script>
+</body>
+</html>
